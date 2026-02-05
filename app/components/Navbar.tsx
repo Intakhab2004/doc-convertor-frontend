@@ -6,6 +6,7 @@ import { useState } from "react"
 import Image from "next/image"
 import img from "@/assets/logo.png"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 
 const navLinks = [
@@ -16,8 +17,9 @@ const navLinks = [
 ]
 
 export default function NavBar(){
-    const [active, setActive] = useState("Home");
     const [user, setUser] = useState(null);
+    const pathname = usePathname();
+
 
 	return (
 		<nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 backdrop-blur-md bg-[rgba(10,10,18,0.82)] 
@@ -44,12 +46,11 @@ export default function NavBar(){
                 <div className="hidden md:flex items-center gap-1">
                     {
                         navLinks.map((link) => {
-                            const isActive = active === link.label
+                            const isActive = pathname === link.redirectLink;
                             return (
                                 <Link
                                     href={link.redirectLink}
                                     key={link.label}
-                                    onClick={() => setActive(link.label)}
                                     className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-thin transition-all duration-300 group ${isActive ? 
                                         "text-white bg-[rgba(139,92,246,0.15)]" : "text-[rgba(180,180,210,0.8)] bg-transparent hover:bg-[rgba(255,255,255,0.06)]" }`}
                                 >
