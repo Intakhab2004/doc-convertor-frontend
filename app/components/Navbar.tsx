@@ -73,7 +73,7 @@ export default function NavBar(){
                     !user ? (
                         <div className="hidden md:flex items-center gap-2">
                             <Link
-                                href={"/log-in"}
+                                href={"/user/login"}
                                 className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-thin text-[rgba(180,180,210,0.9)] 
                                     border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.12)] 
                                     hover:border-[rgba(139,92,246,0.4)] hover:text-white transition-all duration-300 cursor-pointer"
@@ -81,7 +81,7 @@ export default function NavBar(){
                                 <User size={18}/> Log In
                             </Link>
                             <Link
-                                href={"/sign-up"}
+                                href={"/user/signUp"}
                                 className="flex items-center gap-1.5 px-5 py-1.5 rounded-lg text-sm font-semibold text-white transition-all 
                                     duration-300 bg-gradient-to-br from-violet-500 to-cyan-500 shadow-[0_0_18px_rgba(139,92,246,0.35)]
                                     hover:shadow-[0_0_18px_rgba(139,92,246,0.55)] cursor-pointer"
