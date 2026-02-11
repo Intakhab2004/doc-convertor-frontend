@@ -3,7 +3,7 @@
 import Orb from "@/app/components/BackgroundBlur"
 import ContactCard from "@/app/components/ContactCard"
 import SectionHeading from "@/app/components/SectionHeading"
-import { Building2, Mail, MessageCircleCodeIcon, Phone } from "lucide-react"
+import { Building2, Loader2, Mail, MessageCircleCodeIcon, Phone } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { contactSchema } from "@/schemas/contactSchema"
 import { z } from "zod"
@@ -11,6 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import axios, { isAxiosError } from "axios"
+import { auth } from "@/services/apiUrl"
+import { toast } from "sonner"
 
 
 const CONTACT_METHODS = [
@@ -23,6 +27,8 @@ const CONTACT_METHODS = [
 
 
 export default function ContactPage(){
+    const [loader, setLoader] = useState(false);
+
     const form  = useForm<z.infer<typeof contactSchema>>({
         resolver: zodResolver(contactSchema),
         defaultValues: {
@@ -34,7 +40,77 @@ export default function ContactPage(){
     })
 
     const submitHandler = async (data: z.infer<typeof contactSchema>) => {
+        setLoader(true);
 
+        try{
+            const response = await axios.post(auth.CONTACT_API, data);
+            if(response.data.success){
+                const toastId = toast(
+                    "Success ✅",
+                    {
+                        description: response.data.message,
+                        action: {
+                            label: "Dismiss",
+                            onClick: () => {
+                                toast.dismiss(toastId);
+                            }
+                        }
+                    }
+                )
+            }
+
+            form.reset();
+        }
+        catch(error: unknown){
+            if(isAxiosError(error)){
+                console.log("Something went wrong while sending message: ", error.response?.data);
+                const toastId = toast(
+                    "Something went wrong while sending message",
+                    {
+                        description: error.response?.data?.message,
+                        action: {
+                            label: "Dismiss",
+                            onClick: () => {
+                                toast.dismiss(toastId);
+                            }
+                        }
+                    }
+                )
+            }
+            else if(error instanceof Error){
+                console.log("General error:", error.message);
+                const toastId = toast(
+                    "Unexpected error",
+                    {
+                        description: error.message,
+                        action: {
+                            label: "Dismiss",
+                            onClick: () => {
+                                toast.dismiss(toastId)
+                            },
+                        },
+                    }
+                )
+            }
+            else{
+                console.log("An unknown error: ", error);
+                const toastId = toast(
+                    "Something went wrong",
+                    {
+                        description: "Please try again later",
+                        action: {
+                            label: "Dismiss",
+                            onClick: () => {
+                                toast.dismiss(toastId)
+                            },
+                        },
+                    }
+                )
+            }
+        }
+        finally{
+            setLoader(false);
+        }
     } 
 
 
@@ -79,8 +155,8 @@ export default function ContactPage(){
 					sub="Fill out the form below and our team will get back to you shortly."
                 />
 
-                <div className="p-10 bg-[rgba(18,18,32,0.72)] border border-[rgba(100,100,140,.13)] rounded-3xl backdrop-blur-md shadow-[0_8px_40px_rgba(0,0,0,.25)]">
-                    <div className="px-10 py-10 md:py-15 min-h-96 flex flex-col justify-center bg-[rgba(139,92,246,.04)] border-2 border-dashed border-[rgba(139,92,246,0.25)] rounded-2xl">
+                <div className="p-7 md:p-10 bg-[rgba(18,18,32,0.72)] border border-[rgba(100,100,140,.13)] rounded-3xl backdrop-blur-md shadow-[0_8px_40px_rgba(0,0,0,.25)]">
+                    <div className="px-5 py-7 md:px-10 md:py-15 min-h-96 flex flex-col justify-center bg-[rgba(139,92,246,.04)] border-2 border-dashed border-[rgba(139,92,246,0.25)] rounded-2xl">
                         <h2 className="text-white text-3xl mb-4 font-['Cormorant_Garamond',serif]">
                             Send Us a Message
                         </h2>
@@ -172,11 +248,19 @@ export default function ContactPage(){
                                 <div>
                                     <button
                                         type="submit"
-                                        className="px-5 py-3 rounded-lg text-sm font-semibold text-white transition-all 
+                                        className="flex items-center gap-1 px-5 py-3 rounded-lg text-sm font-semibold text-white transition-all 
                                         duration-300 bg-gradient-to-br from-violet-500 to-cyan-500 shadow-[0_0_18px_rgba(139,92,246,0.35)]
                                         hover:shadow-[0_0_18px_rgba(139,92,246,0.55)] cursor-pointer"
                                     >
-                                        Send Message
+                                        {
+                                            loader ? (
+                                                        <>
+                                                            <Loader2 className="mr-2 h-5 w-5 animate-spin"/> Please wait
+                                                        </>
+                                            ) 
+                                            : 
+                                            ("Send Message")
+                                        }
                                     </button>
                                 </div>
                             </form>
