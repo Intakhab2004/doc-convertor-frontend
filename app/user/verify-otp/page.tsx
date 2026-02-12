@@ -3,7 +3,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 
 import Orb from "@/app/components/BackgroundBlur";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -12,25 +12,25 @@ import { clearSignUpData } from "@/redux/authSlice";
 
 const VerifyOtp = () => {
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
 
-  const { signUpData } = useSelector((state: RootState) => state.auth);
+  // const { signUpData } = useSelector((state: RootState) => state.auth);
 
   const [otp, setOtp] = useState<string>("");
 
-  const userId = signUpData?.userId;
+  // const userId = signUpData?.userId;
 
   const handleOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!userId) return;
+    // if (!userId) return;
 
     try {
       await axios.post(
         "http://localhost:4000/api/v1/user/verify-otp",
-        { otp, userId }
+        // { otp, userId }
       );
-      dispatch(clearSignUpData());
+      // dispatch(clearSignUpData());
       router.push("/user/login");
     } catch (error: any) {
       console.log(error.response?.data || error);
@@ -38,10 +38,10 @@ const VerifyOtp = () => {
   };
 
   const handleResendOtp = async () => {
-    if (!userId) return;
+    // if (!userId) return;
 
     try {
-      await axios.post("http://localhost:4000/api/v1/user/resend-otp", { userId });
+      // await axios.post("http://localhost:4000/api/v1/user/resend-otp", { userId });
     } catch (error: any) {
       console.log(error.response?.data || error);
     }
@@ -65,7 +65,7 @@ const VerifyOtp = () => {
           <p className="mt-2 text-center text-sm text-gray-300">
             We sent a verification code to{" "}
             <span className="font-medium">
-              {signUpData?.email}
+              {/* {signUpData?.email} */}
             </span>
           </p>
 
