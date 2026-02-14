@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useDebounceCallback } from 'usehooks-ts'
 import axios, { isAxiosError } from "axios";
-import { auth } from "@/services/apiUrl";
+import api from "@/services/apiUrl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -44,7 +44,7 @@ const SignUp = () => {
 				setCheckUsernameLoader(true);
 
 				try{
-					const response = await axios.get(`${auth.UNIQUE_USERNAME_API}?username=${username}`);
+					const response = await api.get(`/user/unique-username?username=${username}`);
 					setUsernameMsg(response.data.message);
 				}
 				catch(error: unknown){
@@ -65,7 +65,7 @@ const SignUp = () => {
 	const submitHandler = async(data: z.infer<typeof signupSchema>) => {
 		setLoader(true);
 		try{
-			const response = await axios.post(auth.SIGNUP_API, data, {withCredentials: true});
+			const response = await api.post("/user/sign-up", data);
 			if(response.data.success){
                 const toastId = toast(
                     "Success ✅",
@@ -81,7 +81,7 @@ const SignUp = () => {
                 )
 
 				form.reset();
-				router.push("user/verify-otp");
+				router.push(`/verify-otp/${response.data.userId}`);
             }
 		}
 		catch(error: unknown){
