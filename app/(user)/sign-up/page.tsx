@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useDebounceCallback } from 'usehooks-ts'
 import axios, { isAxiosError } from "axios";
-import { auth } from "@/services/apiUrl";
+import api from "@/services/apiUrl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -44,7 +44,7 @@ const SignUp = () => {
 				setCheckUsernameLoader(true);
 
 				try{
-					const response = await axios.get(`${auth.UNIQUE_USERNAME_API}?username=${username}`);
+					const response = await api.get(`/user/unique-username?username=${username}`);
 					setUsernameMsg(response.data.message);
 				}
 				catch(error: unknown){
@@ -65,7 +65,7 @@ const SignUp = () => {
 	const submitHandler = async(data: z.infer<typeof signupSchema>) => {
 		setLoader(true);
 		try{
-			const response = await axios.post(auth.SIGNUP_API, data, {withCredentials: true});
+			const response = await api.post("/user/sign-up", data);
 			if(response.data.success){
                 const toastId = toast(
                     "Success ✅",
@@ -81,7 +81,7 @@ const SignUp = () => {
                 )
 
 				form.reset();
-				router.push("user/verify-otp");
+				router.push(`/verify-otp/${response.data.userId}`);
             }
 		}
 		catch(error: unknown){
@@ -168,29 +168,29 @@ const SignUp = () => {
                                 name="username"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Username</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter Username"
-                                            className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
-                                            {...field}
-											onChange={(e) => {
-												field.onChange(e)
-												debounced(e.target.value)
-											}}
-                                        />
-                                    </FormControl>
-									{
-                                        checkUsernameLoader && <Loader2 className="mt-1 h-5 w-5 animate-spin text-green-500" />
-                                    }
-                                    {
-                                        username && (
-                                            <p className={`mt-1 text-sm ${usernameMsg === "Username is available" ? "text-green-500" : "text-red-500"}`}>
-                                                {usernameMsg}
-                                            </p>
-                                        )
-                                    }
-                                    <FormMessage />
+										<FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Username</FormLabel>
+										<FormControl>
+											<Input
+												placeholder="Enter Username"
+												className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
+												{...field}
+												onChange={(e) => {
+													field.onChange(e)
+													debounced(e.target.value)
+												}}
+											/>
+										</FormControl>
+										{
+											checkUsernameLoader && <Loader2 className="mt-1 h-5 w-5 animate-spin text-green-500" />
+										}
+										{
+											username && (
+												<p className={`mt-1 text-sm ${usernameMsg === "Username is available" ? "text-green-500" : "text-red-500"}`}>
+													{usernameMsg}
+												</p>
+											)
+										}
+										<FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -200,15 +200,15 @@ const SignUp = () => {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Email</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="abc123@gmail.com"
-                                            className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
+										<FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Email</FormLabel>
+										<FormControl>
+											<Input
+												placeholder="abc123@gmail.com"
+												className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
+												{...field}
+											/>
+										</FormControl>
+										<FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -219,15 +219,15 @@ const SignUp = () => {
 									name="password"
 									render={({ field }) => (
 										<FormItem>
-										<FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Password</FormLabel>
-										<FormControl>
-											<Input
-												placeholder="Enter Password"
-												className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
+											<FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Password</FormLabel>
+											<FormControl>
+												<Input
+													placeholder="Enter Password"
+													className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
 										</FormItem>
 									)}
 								/>
@@ -237,20 +237,21 @@ const SignUp = () => {
 									name="confirmPassword"
 									render={({ field }) => (
 										<FormItem>
-										<FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Confirm Password</FormLabel>
-										<FormControl>
-											<Input
-												placeholder="Confirm Password"
-												className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
+											<FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Confirm Password</FormLabel>
+											<FormControl>
+												<Input
+													placeholder="Confirm Password"
+													className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
 										</FormItem>
 									)}
 								/>
 
 								<button
+									disabled={loader || checkUsernameLoader}
 									type="submit"
 									className="w-fit mt-2 flex items-center gap-1 px-6 py-2 rounded-lg text-sm font-semibold text-white transition-all 
 										duration-300 bg-gradient-to-br from-violet-500 to-cyan-500 shadow-[0_0_18px_rgba(139,92,246,0.35)]
@@ -270,16 +271,23 @@ const SignUp = () => {
 						</form>
 					</Form>
 
+					<div className="mt-6 flex items-center gap-3">
+						<div className="flex-1 h-px bg-[rgba(100,100,140,0.2)]" />
+							<span className="text-xs text-[rgba(150,150,180,0.7)] uppercase tracking-wider">
+								or
+							</span>
+						<div className="flex-1 h-px bg-[rgba(100,100,140,0.2)]" />
+					</div>
+
 					<p className="mt-6 text-center text-sm text-gray-400">
 						Already have an account?{" "}
 						<button
-						//   onClick={() => router.push("/user/login")}
-						className="text-violet-400 hover:text-violet-300"
+						  	onClick={() => router.push("/sign-in")}
+							className="text-violet-400 hover:text-violet-300"
 						>
-						Sign In
+							Sign In
 						</button>
 					</p>
-
 				</div>
 			</div>
       	</div>

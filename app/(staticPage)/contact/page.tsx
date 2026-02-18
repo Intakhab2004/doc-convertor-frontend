@@ -12,8 +12,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import axios, { isAxiosError } from "axios"
-import { auth } from "@/services/apiUrl"
+import { isAxiosError } from "axios"
+import api from "@/services/apiUrl"
 import { toast } from "sonner"
 
 
@@ -43,7 +43,7 @@ export default function ContactPage(){
         setLoader(true);
 
         try{
-            const response = await axios.post(auth.CONTACT_API, data);
+            const response = await api.post("/contact/contact-us", data);
             if(response.data.success){
                 const toastId = toast(
                     "Success ✅",
