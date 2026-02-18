@@ -46,6 +46,7 @@ const SignInPage = () => {
                     }
                 )
 
+				localStorage.setItem("accessToken", response.data.accessToken);
 				router.replace("/");
             }
 		}
