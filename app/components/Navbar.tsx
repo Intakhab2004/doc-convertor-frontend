@@ -2,14 +2,15 @@
 
 
 import { CircleAlert, House, LockKeyholeIcon, Mail, Settings, User } from "lucide-react"
-import { useState } from "react"
 import Image from "next/image"
 import img from "@/assets/logo.png"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useAuth } from "@/context/AuthContext"
+import { DesktopDropdownMenu, MobileDropdownMenu } from "./DropdownMenu"
 
 
-const navLinks = [
+export const navLinks = [
     { label: "Home", icon: <House size={18} />, redirectLink: "/" },
     { label: "Tools", icon:<Settings size={20}/>, redirectLink: "/tools"},
     { label: "About", icon: <CircleAlert size={20}/>, redirectLink: "/about"},
@@ -17,7 +18,7 @@ const navLinks = [
 ]
 
 export default function NavBar(){
-    const [user, setUser] = useState(null);
+    const {isAuthenticated} = useAuth();
     const pathname = usePathname();
 
 
@@ -71,10 +72,10 @@ export default function NavBar(){
 
                 {/* Auth Buttons only show when user is not logged in and in desktop view */}
                 {
-                    !user ? (
+                    !isAuthenticated ? (
                         <div className="hidden md:flex items-center gap-2">
                             <Link
-                                href={"/login"}
+                                href={"/sign-in"}
                                 className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-thin text-[rgba(180,180,210,0.9)] 
                                     border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.06)] hover:bg-[rgba(255,255,255,0.12)] 
                                     hover:border-[rgba(139,92,246,0.4)] hover:text-white transition-all duration-300 cursor-pointer"
@@ -82,7 +83,7 @@ export default function NavBar(){
                                 <User size={18}/> Log In
                             </Link>
                             <Link
-                                href={"/signUp"}
+                                href={"/sign-up"}
                                 className="flex items-center gap-1.5 px-5 py-1.5 rounded-lg text-sm font-semibold text-white transition-all 
                                     duration-300 bg-gradient-to-br from-violet-500 to-cyan-500 shadow-[0_0_18px_rgba(139,92,246,0.35)]
                                     hover:shadow-[0_0_18px_rgba(139,92,246,0.55)] cursor-pointer"
@@ -93,9 +94,9 @@ export default function NavBar(){
                     )
                     :
                     (
-                        <div className="px-3 py-1.5 rounded-lg text-sm text-[rgba(180,180,210,0.9)] bg-[rgba(255,255,255,0.06)]
+                        <div className="hidden md:flex px-3 py-1.5 rounded-lg text-sm text-[rgba(180,180,210,0.9)] bg-[rgba(255,255,255,0.06)]
                                     hover:bg-[rgba(255,255,255,0.16)] hover:text-white transition-all duration-300 cursor-pointer">
-                            <User />   {/* Replace it with desktop dropdown menu */ }
+                            <DesktopDropdownMenu />
                         </div>
                     )
                 }
@@ -103,7 +104,7 @@ export default function NavBar(){
                 {/* Mobile view Menu button for logged in or logged out user */}
                 <div className="md:hidden px-3 py-1.5 rounded-lg text-sm text-[rgba(180,180,210,0.9)] bg-[rgba(255,255,255,0.06)]
                                 hover:bg-[rgba(255,255,255,0.16)] hover:text-white transition-all duration-300 cursor-pointer">
-                    <User />   {/* Replace it with mobile dropdown menu */ }
+                    <MobileDropdownMenu />
                 </div>
             </div>
         </nav>
