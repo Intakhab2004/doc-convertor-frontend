@@ -222,6 +222,7 @@ const SignUp = () => {
 											<FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Password</FormLabel>
 											<FormControl>
 												<Input
+													type="password"
 													placeholder="Enter Password"
 													className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
 													{...field}
@@ -240,6 +241,7 @@ const SignUp = () => {
 											<FormLabel className="text-[13px] text-[rgba(180,180,210,.78)]">Confirm Password</FormLabel>
 											<FormControl>
 												<Input
+													type="password"
 													placeholder="Confirm Password"
 													className="text-[14px] border-[rgba(100,100,140,.2)] text-white placeholder:text-white/40 focus-visible:ring-0"
 													{...field}

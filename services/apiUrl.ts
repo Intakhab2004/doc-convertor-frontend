@@ -49,7 +49,7 @@ api.interceptors.response.use(
             catch(err){
                 if(typeof window !== "undefined"){
                     localStorage.removeItem("accessToken");
-                    window.location.href = "/login";
+                    window.location.href = "/sign-in";
                 }
             }
         }
