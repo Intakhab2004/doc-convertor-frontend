@@ -2,47 +2,23 @@
 
 
 import api from "@/services/apiUrl";
-import axios, { isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { createContext, useContext, useEffect, useState } from "react"
 import { toast } from "sonner";
 
 
 interface authContextType {
-    isAuthenticated: boolean,
-    setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>,
-    loader: boolean,
+    isAuthenticated: boolean | undefined,
+    setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean | undefined>>,
     logoutLoader: boolean,
     logout: () => void
 }
 
 const authContext = createContext<authContextType | null>(null);
 
-export const AuthProvider = ({children}: {children: React.ReactNode}) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [loader, setLoader] = useState(false);
+export const AuthProvider = ({children, initialUser}: {children: React.ReactNode, initialUser: boolean | undefined}) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(initialUser);
     const [logoutLoader, setLogoutLoader] = useState(false);
-
-    useEffect(() => {
-        const checkAuthentication = async() => {
-            try{
-                setLoader(true);
-
-                const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/refresh-token`, {}, {withCredentials: true});
-                if(res.data.success){
-                    setIsAuthenticated(true);
-                }
-            }
-            catch(error: unknown){
-                console.log("Something went wrong: ", error);
-                setIsAuthenticated(false);
-            }
-            finally{
-                setLoader(false);
-            }
-        }
-
-        checkAuthentication();
-    }, [])
 
     const logout = async() => {
         setLogoutLoader(true);
@@ -91,7 +67,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
 
     return (
-        <authContext.Provider value={{isAuthenticated, setIsAuthenticated, loader, logout, logoutLoader}}>
+        <authContext.Provider value={{isAuthenticated, setIsAuthenticated, logout, logoutLoader}}>
             {children}
         </authContext.Provider>
     )
