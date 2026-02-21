@@ -1,6 +1,7 @@
 "use client"
 
 import { Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 
@@ -9,6 +10,7 @@ interface propType  {
     title: string,
     category: string,
     desc: string,
+    redirect: string,
     users: string,
     rating: number,
     color: string
@@ -16,9 +18,11 @@ interface propType  {
 
 function ToolCard({ tool }: {tool: propType}) {
     const [hovered, setHovered] = useState(false);
+    const router = useRouter();
 
     return (
         <div
+            onClick={() => router.push(tool.redirect)}
             className="relative rounded-2xl p-0.5 transition-all duration-500 cursor-pointer"
             style={{
                 background: hovered ? `linear-gradient(135deg, ${tool.color}44, transparent 70%)` : "transparent",

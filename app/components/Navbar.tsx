@@ -47,7 +47,7 @@ export default function NavBar(){
                 <div className="hidden md:flex items-center gap-1">
                     {
                         navLinks.map((link) => {
-                            const isActive = pathname === link.redirectLink;
+                            const isActive = pathname === link.redirectLink || pathname.startsWith(`${link.redirectLink}/`);
                             return (
                                 <Link
                                     href={link.redirectLink}
